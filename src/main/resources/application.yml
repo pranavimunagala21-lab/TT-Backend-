@@ -1,5 +1,5 @@
 server:
-  port: 8084
+  port: ${SERVER_PORT:8084}
   servlet:
     context-path: /
 
@@ -9,10 +9,10 @@ spring:
   application:
     name: campussphere-backend
   datasource:
-    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:campussphere}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:campussphere}?sslMode=REQUIRED&allowPublicKeyRetrieval=true&serverTimezone=UTC
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    password: Kiran@987
+    username: ${MYSQL_USERNAME:campussphere}
+    password: ${MYSQL_PASSWORD:}
 
   jpa:
     database-platform: org.hibernate.dialect.MySQLDialect
