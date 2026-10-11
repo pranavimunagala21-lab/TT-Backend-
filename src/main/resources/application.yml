@@ -1,0 +1,54 @@
+server:
+  port: 8084
+  servlet:
+    context-path: /
+
+spring:
+  profiles:
+    default: local
+  application:
+    name: campussphere-backend
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:campussphere}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: Kiran@987
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: ${JPA_DDL_AUTO:update}
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 21MB
+
+jwt:
+  expiration: 86400000 # 24 hours
+
+ai:
+  provider: ${AI_PROVIDER:disabled}
+  api-key: ${AI_API_KEY:${LLM_API_KEY:}}
+  base-url: ${AI_BASE_URL:https://api.openai.com/v1}
+  model: ${AI_MODEL:${LLM_MODEL:gpt-4o-mini}}
+  embedding-model: ${AI_EMBEDDING_MODEL:text-embedding-3-small}
+  timeout-seconds: ${AI_TIMEOUT_SECONDS:20}
+  max-candidates: ${AI_MAX_CANDIDATES:500}
+  max-index-records: ${AI_MAX_INDEX_RECORDS:250}
+  max-context-sources: ${AI_MAX_CONTEXT_SOURCES:8}
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+campussphere:
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173,http://127.0.0.1:5173}
+  storage:
+    documents-dir: ${DOCUMENT_STORAGE_DIR:${user.home}/campussphere-data/documents}
