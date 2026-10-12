@@ -13,6 +13,8 @@ import java.util.List;
 @Repository
 public interface VenueRepository extends JpaRepository<Venue, Long> {
     List<Venue> findByBuilding(String building);
+    boolean existsByNameIgnoreCaseAndBuildingIgnoreCase(String name, String building);
+    boolean existsByNameIgnoreCaseAndBuildingIgnoreCaseAndIdNot(String name, String building, Long id);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select v from Venue v where v.id = :id")

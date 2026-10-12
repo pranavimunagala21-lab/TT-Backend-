@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** Optionally bootstraps a local administrator when explicit credentials are supplied. */
+/** Bootstraps the development administrator only when the local profile is active. */
 @Component
 @Profile("local")
 public class AdminBootstrapRunner implements ApplicationRunner {
@@ -25,8 +25,8 @@ public class AdminBootstrapRunner implements ApplicationRunner {
     private final PasswordEncoder passwordEncoder;
 
     public AdminBootstrapRunner(UserRepository users, PasswordEncoder passwordEncoder,
-                                @Value("${ADMIN_BOOTSTRAP_EMAIL:}") String adminEmail,
-                                @Value("${ADMIN_BOOTSTRAP_PASSWORD:}") String adminPassword) {
+                                @Value("${ADMIN_BOOTSTRAP_EMAIL:admin@campussphere.local}") String adminEmail,
+                                @Value("${ADMIN_BOOTSTRAP_PASSWORD:CampusAdmin@2026!}") String adminPassword) {
         this.users = users;
         this.passwordEncoder = passwordEncoder;
         this.adminEmail = adminEmail;

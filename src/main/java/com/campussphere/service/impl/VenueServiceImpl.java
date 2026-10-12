@@ -50,6 +50,7 @@ public class VenueServiceImpl implements VenueService {
     @Transactional
     public VenueDto createVenue(VenueDto dto, String managerEmail) {
         validateVenue(dto);
+        ensureUniqueVenue(dto, null);
         User manager = userRepository.findByEmail(managerEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + managerEmail));
         Venue venue = new Venue();
@@ -64,6 +65,7 @@ public class VenueServiceImpl implements VenueService {
     public VenueDto updateVenue(Long id, VenueDto dto) {
         validateVenue(dto);
         Venue venue = venueRepository.findByIdForUpdate(id).orElseThrow(() -> new ResourceNotFoundException("Venue not found with id: " + id));
+        ensureUniqueVenue(dto, id);
         List<BookingStatus> blockingStatuses = List.of(BookingStatus.PENDING, BookingStatus.APPROVED);
         if (dto.getCapacity() < venue.getCapacity()
                 && bookingRepository.existsByVenueIdAndStatusInAndStartTimeAfterAndAttendeesCountGreaterThan(id, blockingStatuses, LocalDateTime.now(), dto.getCapacity())) {
@@ -104,6 +106,13 @@ public class VenueServiceImpl implements VenueService {
         if (dto.getName() == null || dto.getName().isBlank()) throw new BadRequestException("Venue name is required");
         if (dto.getBuilding() == null || dto.getBuilding().isBlank()) throw new BadRequestException("Building is required");
         if (dto.getCapacity() == null || dto.getCapacity() < 1) throw new BadRequestException("Capacity must be at least 1");
+    }
+
+    private void ensureUniqueVenue(VenueDto dto, Long currentId) {
+        boolean duplicate = currentId == null
+                ? venueRepository.existsByNameIgnoreCaseAndBuildingIgnoreCase(dto.getName().trim(), dto.getBuilding().trim())
+                : venueRepository.existsByNameIgnoreCaseAndBuildingIgnoreCaseAndIdNot(dto.getName().trim(), dto.getBuilding().trim(), currentId);
+        if (duplicate) throw new ConflictException("A venue with this name already exists in this building");
     }
 
     private void validateStatus(String status) {
